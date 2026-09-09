@@ -1,104 +1,576 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="ko">
 <head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<meta name="theme-color" content="#123f67">
-<title>서귀포 골목형상점가 | 소비쿠폰 가맹점 찾기</title>
-<script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>서귀포시 골목형상점가 소비쿠폰 가맹점 찾기</title>
+<meta name="description" content="서귀포시 골목형상점가 공통 사용 소비쿠폰을 쓸 수 있는 가맹점을 상호명·메뉴·지역으로 검색하세요.">
+<meta name="theme-color" content="#31B02B">
+<meta property="og:title" content="서귀포시 골목형상점가 소비쿠폰 가맹점 찾기">
+<meta property="og:description" content="3만원 이상 결제 시 5,000원 할인. 쿠폰을 쓸 수 있는 가맹점을 검색해 보세요.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Jua&display=swap" rel="stylesheet">
+<link rel="stylesheet" as="style" crossorigin href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable-dynamic-subset.min.css">
+
 <style>
-*{box-sizing:border-box}body{margin:0;background:#f4f2ec;color:#1d2930;font-family:-apple-system,BlinkMacSystemFont,"Noto Sans KR","Malgun Gothic",sans-serif}
-.app{max-width:760px;margin:auto;min-height:100vh;background:#fff}
-.hero{background:linear-gradient(145deg,#123f67,#236487);color:white;padding:28px 20px 22px;border-radius:0 0 24px 24px}
-.badge{display:inline-block;background:#f4c34f;color:#163e5a;font-weight:900;font-size:12px;padding:6px 10px;border-radius:999px}
-h1{font-size:26px;line-height:1.28;margin:12px 0 7px;letter-spacing:-1px}.sub{font-size:13px;line-height:1.6;opacity:.92;margin:0 0 18px}
-.search{display:flex;background:#fff;border-radius:14px;padding:5px;box-shadow:0 7px 22px #0002}.search input{border:0;outline:0;flex:1;min-width:0;padding:12px;font-size:15px}.search button{border:0;border-radius:10px;background:#e85a32;color:#fff;font-weight:900;padding:0 17px}
-.quick{display:flex;gap:7px;overflow:auto;margin-top:10px}.quick button{border:1px solid #ffffff55;background:#ffffff14;color:white;border-radius:999px;padding:7px 11px;white-space:nowrap;font-size:12px}
-.content{padding:18px 18px 30px}.notice{background:#fff7df;border:1px solid #f0dda8;border-radius:14px;padding:13px;font-size:12px;line-height:1.55;margin-bottom:16px}
-.notice b{color:#123f67}.bar{display:flex;justify-content:space-between;align-items:center;margin:8px 0 11px}.count{font-weight:900;font-size:14px}.count span{color:#e85a32}
-select{border:1px solid #d7dde0;border-radius:9px;background:#fff;padding:7px;font-size:12px}
-.card{border:1px solid #e3e7e9;border-radius:16px;padding:15px;margin:0 0 11px;box-shadow:0 2px 8px #123f670b}
-.top{display:flex;justify-content:space-between;gap:10px}.name{font-weight:900;font-size:17px}.no{font-size:10px;color:#8b9398;margin-left:5px}.area{font-size:12px;color:#687278;margin-top:4px}
-.ok{background:#e6f5e9;color:#24723d;font-weight:900;font-size:11px;border-radius:999px;padding:6px 8px;height:max-content;white-space:nowrap}
-.meta{font-size:12px;line-height:1.65;color:#626c71;margin:10px 0}.menu{background:#f2f6f8;color:#123f67;padding:8px 10px;border-radius:9px;font-size:12px;margin-bottom:9px}
-.actions{display:flex;gap:8px}.actions a,.actions button{flex:1;text-align:center;text-decoration:none;border:0;border-radius:9px;padding:9px;font-size:12px;font-weight:800}.map{background:#123f67;color:#fff}.call{background:#edf0f2;color:#26343b}
-.empty{padding:45px 10px;text-align:center;color:#7b858a}.empty strong{display:block;color:#26343a;margin-bottom:6px}
-.about{margin-top:24px}.about h2{font-size:18px;margin:0 0 10px}.about p{font-size:12px;line-height:1.65;color:#5f696e;margin:0}
-.admin{margin-top:22px;border-top:1px solid #e7e9ea;padding-top:14px}.admin summary{font-size:12px;color:#667176;cursor:pointer}.adminbox{margin-top:10px;background:#f7f8f8;border-radius:12px;padding:12px;font-size:11px;line-height:1.6;color:#626b70}.file{display:block;margin-top:8px;font-size:12px}
-.footer{text-align:center;color:#92999d;font-size:10px;padding:0 18px 28px;line-height:1.6}
+/* ─────────────────────────────────────────────
+   디자인 토큰 — 쿠폰 시안 색상 기준
+   ───────────────────────────────────────────── */
+:root{
+  --green:#31B02B;        /* 쿠폰 배경 초록 (시안 원본색) */
+  --green-deep:#2E8629;
+  --lemon:#EBE52F;        /* 쿠폰 본판 노랑 (시안 원본색) */
+  --cream:#F4EBD9;        /* 쿠폰 우측 크림 */
+  --ink:#171717;          /* 외곽선·본문 */
+  --coral:#E8453C;        /* '서귀포시' 코랄 */
+  --paper:#FFFFFF;
+
+  --line:2.5px solid var(--ink);
+  --drop:4px 4px 0 var(--ink);
+  --r-lg:26px;
+  --r-md:18px;
+  --r-sm:12px;
+
+  --wrap:640px;
+}
+
+*,*::before,*::after{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%}
+body{
+  margin:0;
+  background:var(--green);
+  color:var(--ink);
+  font-family:"Pretendard Variable",Pretendard,-apple-system,BlinkMacSystemFont,system-ui,"Malgun Gothic",sans-serif;
+  font-size:16px;
+  line-height:1.6;
+  word-break:keep-all;
+}
+.display{font-family:"Jua","Pretendard Variable",Pretendard,sans-serif;font-weight:400;letter-spacing:-0.01em}
+button,input,select{font-family:inherit;font-size:inherit;color:inherit}
+button{cursor:pointer}
+a{color:inherit}
+:focus-visible{outline:3px solid var(--ink);outline-offset:2px;border-radius:6px}
+
+.wrap{max-width:var(--wrap);margin:0 auto;padding:0 16px}
+
+/* ─────────────  히어로 = 종이 쿠폰  ───────────── */
+.hero{padding:20px 0 0}
+.figures{
+  position:relative;display:flex;align-items:flex-end;justify-content:space-between;
+  margin-top:-26px;pointer-events:none;
+}
+.figures img{display:block;flex:0 0 auto;width:auto}
+.fig-girl{height:clamp(128px,36vw,196px);margin-left:-4px}
+.fig-beer{height:clamp(100px,28vw,152px);margin-right:-4px}
+.ticket{
+  position:relative;background:var(--lemon);
+  border:var(--line);border-radius:var(--r-lg);
+  box-shadow:var(--drop);
+  padding:22px 22px 18px;
+}
+/* 쿠폰 절취선 노치 */
+.ticket::before,.ticket::after{
+  content:"";position:absolute;top:calc(100% - 88px);
+  width:26px;height:26px;background:var(--green);
+  border:var(--line);border-radius:50%;
+}
+.ticket::before{left:-15px}
+.ticket::after{right:-15px}
+
+.brand{font-size:22.5px;color:var(--coral);margin:0 0 -2px}
+.title{font-size:clamp(30px,9vw,42px);line-height:1.05;margin:0}
+.title small{display:block;font-size:clamp(22px,6.3vw,27px);margin-top:6px;color:var(--ink)}
+
+.offer{
+  display:flex;align-items:baseline;gap:8px;flex-wrap:wrap;
+  margin:16px 0 10px;
+}
+.offer .amount{font-size:clamp(44px,15vw,66px);line-height:.9;letter-spacing:-0.03em}
+.offer .unit{font-size:clamp(18px,5vw,24px)}
+.offer .cond{font-size:28px;width:100%;margin-bottom:4px;font-family:"Jua",Pretendard,sans-serif}
+
+.period{
+  display:inline-block;background:var(--ink);color:var(--lemon);
+  border-radius:999px;padding:9px 20px;font-size:22px;line-height:1.3;
+}
+
+.ticket-cut{
+  border:0;border-top:2.5px dashed var(--ink);
+  margin:22px -22px 14px;
+}
+.ticket-note{font-size:13.5px;line-height:1.7;margin:0}
+.ticket-note b{background:var(--paper);padding:0 4px;border-radius:4px}
+
+/* ─────────────  검색 (스티키)  ───────────── */
+.searchbar{
+  position:sticky;top:0;z-index:50;
+  background:var(--green);
+  padding:12px 0 10px;
+  margin-top:18px;
+}
+.searchbar.stuck{box-shadow:0 8px 18px rgba(0,0,0,.18)}
+.search-field{position:relative}
+.search-field input{
+  width:100%;background:var(--paper);
+  border:var(--line);border-radius:999px;
+  padding:15px 52px 15px 20px;
+  font-size:16.5px;font-weight:600;
+  box-shadow:var(--drop);
+}
+.search-field input::placeholder{color:#8d8d8d;font-weight:500}
+.search-clear{
+  position:absolute;right:14px;top:50%;transform:translateY(-50%);
+  width:30px;height:30px;border:0;border-radius:50%;
+  background:var(--ink);color:var(--lemon);font-size:16px;line-height:1;
+  display:none;
+}
+.search-clear.on{display:block}
+
+/* ─────────────  필터  ───────────── */
+.filters{padding-bottom:6px}
+.fgroup{margin-bottom:10px}
+.fgroup > h2{
+  font-size:14px;margin:0 0 7px;color:#EAF7E4;font-weight:700;
+}
+.chips{
+  display:flex;gap:7px;overflow-x:auto;padding:2px 16px 6px;
+  margin:0 -16px;scrollbar-width:none;-webkit-overflow-scrolling:touch;
+}
+.chips::-webkit-scrollbar{display:none}
+.chip{
+  flex:0 0 auto;background:var(--cream);border:2px solid var(--ink);
+  border-radius:999px;padding:8px 14px;font-size:14.5px;font-weight:600;
+  white-space:nowrap;transition:transform .08s ease;
+}
+.chip[aria-pressed="true"]{background:var(--lemon);box-shadow:2px 2px 0 var(--ink)}
+.chip:active{transform:translateY(1px)}
+
+/* ─────────────  결과  ───────────── */
+.resultbar{
+  display:flex;align-items:center;justify-content:space-between;gap:10px;
+  color:#fff;font-size:14.5px;font-weight:700;padding:6px 0 12px;
+}
+.resultbar .count b{color:var(--lemon);font-size:17px}
+.reset{
+  background:transparent;border:2px solid rgba(255,255,255,.65);color:#fff;
+  border-radius:999px;padding:5px 12px;font-size:13px;font-weight:700;
+}
+.reset[hidden]{display:none}
+
+.list{display:grid;gap:12px;padding-bottom:8px}
+.card{
+  background:var(--cream);border:var(--line);border-radius:var(--r-md);
+  box-shadow:var(--drop);padding:15px 16px;
+}
+.card-top{display:flex;align-items:flex-start;gap:10px}
+.card-emoji{
+  flex:0 0 auto;width:42px;height:42px;background:var(--lemon);
+  border:2px solid var(--ink);border-radius:12px;
+  display:grid;place-items:center;font-size:21px;
+}
+.card-name{font-size:19px;margin:0;line-height:1.25}
+.card-meta{font-size:13px;color:#5a5a5a;margin:2px 0 0}
+.card-menu{
+  display:flex;flex-wrap:wrap;gap:5px;margin:11px 0 0;padding:0;list-style:none;
+}
+.card-menu li{
+  background:var(--paper);border:1.5px solid var(--ink);border-radius:999px;
+  padding:3px 9px;font-size:12.5px;font-weight:600;
+}
+.card-addr{font-size:13.5px;margin:11px 0 0;color:#3c3c3c}
+.card-actions{display:flex;gap:8px;margin-top:12px}
+.card-actions a{
+  flex:1;text-align:center;text-decoration:none;
+  border:2px solid var(--ink);border-radius:10px;padding:9px 6px;
+  font-size:14px;font-weight:700;background:var(--paper);
+}
+.card-actions a.primary{background:var(--green);color:#fff}
+
+.empty{
+  background:var(--cream);border:2.5px dashed var(--ink);border-radius:var(--r-md);
+  padding:30px 20px;text-align:center;
+}
+.empty h2{font-size:19px;margin:0 0 6px}
+.empty p{font-size:14.5px;margin:0;color:#4a4a4a}
+
+/* ─────────────  안내 섹션  ───────────── */
+.info{background:var(--cream);border-top:var(--line);margin-top:26px;padding:26px 0 34px}
+.info h2{font-size:22px;margin:0 0 10px}
+.info section + section{margin-top:24px;padding-top:24px;border-top:2px dashed rgba(23,23,23,.28)}
+.info p{margin:0 0 8px;font-size:15px}
+.info ul{margin:0;padding-left:18px;font-size:14.5px}
+.info li{margin-bottom:5px}
+.mk-list{
+  display:flex;flex-wrap:wrap;gap:6px;list-style:none;padding:0;margin:10px 0 0;
+}
+.mk-list li{
+  background:var(--paper);border:2px solid var(--ink);border-radius:999px;
+  padding:5px 12px;font-size:13.5px;font-weight:600;
+}
+.callout{
+  background:var(--lemon);border:var(--line);border-radius:var(--r-md);
+  padding:14px 16px;margin-top:14px;font-size:15px;font-weight:600;
+}
+.callout a{font-weight:800}
+
+.coupon-shot{margin:14px 0 0}
+.coupon-shot img{
+  width:100%;height:auto;display:block;
+  border:var(--line);border-radius:var(--r-md);box-shadow:var(--drop);
+}
+.coupon-shot figcaption{font-size:13px;color:#4a4a4a;margin-top:7px}
+
+footer{background:var(--ink);color:#cfcfcf;font-size:12.5px;padding:20px 0 28px;text-align:center;line-height:1.7}
+
+@media (prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}}
+@media (min-width:560px){
+  .list{grid-template-columns:1fr 1fr}
+  .info section{max-width:none}
+}
 </style>
 </head>
 <body>
-<div class="app">
+
 <header class="hero">
-  <span class="badge">소비쿠폰 가맹점 안내</span>
-  <h1>서귀포 골목형상점가<br>쿠폰 사용처를 찾아보세요</h1>
-  <p class="sub">상호명·메뉴·지역을 검색해<br>5천원 할인쿠폰을 사용할 수 있는 가맹점을 확인하세요.</p>
-  <div class="search"><input id="q" placeholder="예: 온누리빵집, 신영로, 카페"><button onclick="render()">검색</button></div>
-  <div class="quick">
-    <button onclick="setQ('')">전체</button><button onclick="setQ('신영로')">신영로</button>
-    <button onclick="setQ('하모상가로')">하모상가로</button><button onclick="setQ('빵')">빵</button><button onclick="setQ('식당')">식당</button>
+  <div class="wrap">
+    <div class="ticket">
+      <p class="brand display">서귀포시</p>
+      <h1 class="title display">골목형상점가 소비쿠폰
+        <small>쓸 수 있는 가게 찾기</small>
+      </h1>
+
+      <div class="offer display">
+        <span class="cond">3만원 이상 결제하면</span>
+        <span class="amount">5,000</span><span class="unit">원 할인</span>
+      </div>
+      <span class="period display" id="periodText">사용기간 2026. 9. 11.(금) ~ 10. 31.(토)</span>
+
+      <hr class="ticket-cut">
+      <p class="ticket-note">
+        아래에서 <b>상호명·메뉴·지역</b>으로 검색하면 쿠폰을 쓸 수 있는 가게인지 바로 확인할 수 있습니다.
+      </p>
+    </div>
+
+    <div class="figures" aria-hidden="true">
+      <img class="fig-girl" src="img/char-girl.png" alt="" width="215" height="496" fetchpriority="high">
+      <img class="fig-beer" src="img/char-beer.png" alt="" width="318" height="318">
+    </div>
   </div>
 </header>
-<main class="content">
-  <div class="notice"><b>🎫 쿠폰 사용 안내</b><br>3만원 이상 결제 시 5천원 할인 · 2026. 9. 11.(금) ~ 2026. 11. 30.(월)<br>예산 소진 시 조기 마감되며 선착순으로 사용 가능합니다.</div>
-  <div class="bar"><div class="count">쿠폰 사용 가능 가맹점 <span id="count">0</span>곳</div><select id="sort" onchange="render()"><option value="name">상호명순</option><option value="address">주소순</option></select></div>
-  <section id="results"></section>
-  <div class="about"><h2>골목형상점가란?</h2><p>지역의 상점들이 모여 형성된 골목상권입니다. 이 페이지에서는 소비쿠폰을 사용할 수 있는 참여 가맹점을 쉽게 찾아볼 수 있습니다.</p></div>
-  <details class="admin">
-    <summary>관리용 · 엑셀 파일로 가맹점 데이터 교체</summary>
-    <div class="adminbox">
-      실제 운영 시 최신 엑셀을 선택하면 이 브라우저에서 즉시 검색 데이터가 교체됩니다.<br>
-      권장 열: <b>사업장명(또는 상호명), 도로명전체주소(또는 주소), 연락처☎(또는 전화번호), 메뉴</b>
-      <input class="file" id="xlsx" type="file" accept=".xlsx,.xls,.csv">
-      <div id="importMsg" style="margin-top:7px"></div>
-    </div>
-  </details>
-</main>
-<footer class="footer">서귀포 골목형상점가 소비쿠폰 가맹점 안내 시안<br>※ 실제 배포 전 가맹점 정보와 운영사무국 연락처를 최종 확인해 주세요.</footer>
+
+<div class="searchbar" id="searchbar">
+  <div class="wrap search-field">
+    <label for="q" class="sr-only" style="position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)">가맹점 검색</label>
+    <input id="q" type="search" inputmode="search" autocomplete="off"
+           placeholder="가게 이름, 메뉴, 지역을 입력하세요">
+    <button class="search-clear" id="clearBtn" type="button" aria-label="검색어 지우기">✕</button>
+  </div>
 </div>
+
+<div class="wrap filters">
+  <div class="fgroup">
+    <h2>지역</h2>
+    <div class="chips" id="areaChips" role="group" aria-label="지역 선택"></div>
+  </div>
+  <div class="fgroup">
+    <h2>상점가</h2>
+    <div class="chips" id="marketChips" role="group" aria-label="상점가 선택"></div>
+  </div>
+  <div class="fgroup">
+    <h2>업종</h2>
+    <div class="chips" id="categoryChips" role="group" aria-label="업종 선택"></div>
+  </div>
+</div>
+
+<main class="wrap">
+  <div class="resultbar">
+    <span class="count" id="count" aria-live="polite"></span>
+    <button class="reset" id="resetBtn" type="button" hidden>조건 초기화</button>
+  </div>
+  <div class="list" id="list"></div>
+</main>
+
+<div class="info">
+  <div class="wrap">
+
+    <section>
+      <h2 class="display">골목형상점가란?</h2>
+      <p>큰 전통시장은 아니지만, 동네 골목에 작은 상점들이 모여 상권을 이룬 곳입니다. 일정 기준을 갖추면 지방자치단체가 <strong>골목형상점가</strong>로 지정합니다.</p>
+      <p>서귀포시에는 현재 10개 골목형상점가가 지정되어 있습니다. 이번 쿠폰 이벤트에 참여하는 점포는 위 검색에서 확인해 주세요.</p>
+      <ul class="mk-list" id="marketNameList"></ul>
+    </section>
+
+    <section>
+      <h2 class="display">이 쿠폰이 맞나요?</h2>
+      <p>가지고 계신 종이 쿠폰의 앞·뒷면입니다.</p>
+      <figure class="coupon-shot">
+        <img src="img/coupon-front.jpg" alt="쿠폰 앞면. 서귀포시 골목형상점가 공통 사용 소비쿠폰, 3만원 이상 결제 시 5,000원 할인, 사용가능 골목형상점가 목록과 QR코드." width="1000" height="400" loading="lazy">
+        <figcaption>앞면</figcaption>
+      </figure>
+      <figure class="coupon-shot">
+        <img src="img/coupon-back.jpg" alt="쿠폰 뒷면. 사용 시 유의사항과 간단 만족도 조사, 소비자 성명·연락처 기재란." width="1000" height="400" loading="lazy">
+        <figcaption>뒷면 — 만족도 조사와 소비자 정보를 적어 주세요</figcaption>
+      </figure>
+    </section>
+
+    <section>
+      <h2 class="display">쿠폰 사용 방법</h2>
+      <ul>
+        <li>서귀포시 골목형상점가 안에 있는 <strong>지정 가맹점</strong>에서만 쓸 수 있습니다.</li>
+        <li>1회 결제 금액이 <strong>3만원 이상</strong>일 때 <strong>5,000원</strong> 할인됩니다.</li>
+        <li><strong>1인 1매, 1회</strong>만 사용할 수 있습니다.</li>
+        <li>현금 교환·잔액 환불·다른 할인과의 중복 사용은 안 됩니다.</li>
+        <li>예산이 모두 소진되면 사용기간 중이라도 조기 마감됩니다.</li>
+        <li>쿠폰 뒷면의 만족도 조사와 소비자 정보를 적어 가맹점에 내주세요.</li>
+      </ul>
+      <div class="callout">
+        쿠폰 사용 문의 <a href="tel:18997628">1899-7628</a>
+      </div>
+    </section>
+
+  </div>
+</div>
+
+<footer>
+  <div class="wrap">
+    가맹점 정보는 사정에 따라 변경될 수 있습니다.
+  </div>
+</footer>
+
 <script>
-let stores=[{"no": 1, "name": "온누리빵집", "address": "신영로 117-1", "phone": "794-8305", "menu": ""}, {"no": 2, "name": "제주흑돈만두", "address": "신영로 117", "phone": "792-7117", "menu": ""}, {"no": 3, "name": "담다디분식", "address": "신영로 115", "phone": "794-4609", "menu": ""}, {"no": 4, "name": "중앙미용실", "address": "신영로 113", "phone": "794-2103", "menu": ""}, {"no": 5, "name": "건강약국", "address": "하모상가로51-1", "phone": "794-7578", "menu": ""}, {"no": 6, "name": "PAT", "address": "하모상가로 49", "phone": "787-0432", "menu": ""}, {"no": 7, "name": "가나상사", "address": "신영로109", "phone": "794-2406", "menu": ""}, {"no": 8, "name": "중앙사진관", "address": "신영로 109", "phone": "794-2209", "menu": ""}, {"no": 10, "name": "정아소주방", "address": "하모상가로 41", "phone": "794-7494", "menu": ""}, {"no": 11, "name": "태평통신", "address": "하모상가로 37-1", "phone": "720-5200", "menu": ""}, {"no": 12, "name": "벽산장식", "address": "하모상가로 36", "phone": "794-6505", "menu": ""}, {"no": 13, "name": "시온사우나", "address": "하모상가로 35-3", "phone": "794-2263", "menu": ""}, {"no": 14, "name": "고스트캐슬PC방", "address": "하모상가로 38-1", "phone": "792-3011", "menu": ""}, {"no": 15, "name": "다빈치안경", "address": "하모상가로 29", "phone": "792-4449", "menu": ""}, {"no": 16, "name": "㈜케이텔레콤", "address": "하모중앙로75", "phone": "0503-7150-5921", "menu": ""}, {"no": 17, "name": "젠틀맨미용실", "address": "하모중앙로75", "phone": "792-3251", "menu": ""}, {"no": 19, "name": "멍멍아놀자", "address": "하모상가로 31", "phone": "", "menu": ""}, {"no": 20, "name": "이디글라", "address": "하모상가로31 2층", "phone": "792-7172", "menu": ""}, {"no": 21, "name": "다모아미용실", "address": "하모상가로 35", "phone": "794-3335", "menu": ""}, {"no": 22, "name": "영해식당", "address": "하모상가로 34-2", "phone": "794-2262", "menu": ""}, {"no": 23, "name": "한솥도시락", "address": "하모상가로 35", "phone": "792-5055", "menu": ""}, {"no": 24, "name": "으뜸아이스크림", "address": "하모상가로 32", "phone": "", "menu": ""}, {"no": 25, "name": "소원텔레콤", "address": "하모상가로 36-1", "phone": "794-9434", "menu": ""}, {"no": 26, "name": "갤러리아", "address": "하모상가로 35", "phone": "794-1228", "menu": ""}, {"no": 27, "name": "개나리미용실", "address": "하모상가로 35", "phone": "794-9972", "menu": ""}, {"no": 28, "name": "행운열쇠", "address": "하모상가로 37", "phone": "792-1388", "menu": ""}, {"no": 29, "name": "정현식당", "address": "하모상가로 37-1", "phone": "792-4435", "menu": ""}, {"no": 30, "name": "대정안과", "address": "하모상가로 38-2", "phone": "794-9900", "menu": ""}, {"no": 31, "name": "정금사", "address": "하모상가로 40", "phone": "794-9989", "menu": ""}, {"no": 32, "name": "보광당", "address": "하모상가로 40-1", "phone": "794-2175", "menu": ""}, {"no": 33, "name": "에스샵", "address": "하모상가로 40-1", "phone": "", "menu": ""}, {"no": 34, "name": "koiping", "address": "하모상가로 39", "phone": "794-2966", "menu": ""}, {"no": 35, "name": "백화서점", "address": "하모상가로 39-2", "phone": "794-2309", "menu": ""}, {"no": 36, "name": "다본안경", "address": "하모상가로 41", "phone": "792-0606", "menu": ""}, {"no": 37, "name": "골드축산", "address": "하모상가로 41-1", "phone": "792-2233", "menu": ""}, {"no": 38, "name": "대정꽃집", "address": "하모상가로 40-1", "phone": "794-1388", "menu": ""}, {"no": 39, "name": "모슬포스마일꽈배기", "address": "하모상가로40-2", "phone": "794-5889", "menu": ""}, {"no": 40, "name": "모슬로우", "address": "하모상가로 42-1", "phone": "", "menu": ""}, {"no": 41, "name": "정아소주방", "address": "하모상가로 42-1", "phone": "794-7494", "menu": ""}, {"no": 42, "name": "세니떼뷰티샵", "address": "하모상가로 44", "phone": "", "menu": ""}, {"no": 43, "name": "나비", "address": "하모상가로 44-1", "phone": "792-5820", "menu": ""}, {"no": 44, "name": "모니카", "address": "하모상가로 45", "phone": "794-2588", "menu": ""}, {"no": 45, "name": "님프만", "address": "하모상가로 45", "phone": "", "menu": ""}, {"no": 46, "name": "왕미용실", "address": "하모상가로 45-1", "phone": "", "menu": ""}, {"no": 47, "name": "장미화장품", "address": "하모상가로 45-1", "phone": "794-8668", "menu": ""}, {"no": 48, "name": "서귀대정시계탑씨유", "address": "하모이삼로52번길 18-3", "phone": "", "menu": ""}, {"no": 49, "name": "배스킨라빈스", "address": "하모상가로49", "phone": "792-2756", "menu": ""}, {"no": 50, "name": "신세계제과", "address": "하모상가로 51", "phone": "794-2969", "menu": ""}, {"no": 51, "name": "피로회복", "address": "하모상가로 42 2층", "phone": "794-7879", "menu": ""}, {"no": 52, "name": "옷병원", "address": "하모상가로 44", "phone": "", "menu": ""}, {"no": 53, "name": "대정송약국", "address": "하모상가로 46", "phone": "794-2802", "menu": ""}, {"no": 55, "name": "야끼토리 잔치", "address": "신영로 117", "phone": "", "menu": ""}, {"no": 56, "name": "멕시코니", "address": "하모상가로34", "phone": "794-3737", "menu": ""}];
-function norm(v){return String(v??'').trim()}
-function parseRows(rows){
- const find=(r,keys)=>{for(const k of keys){const hit=Object.keys(r).find(x=>norm(x).replace(/\s/g,'').toLowerCase()===k.replace(/\s/g,'').toLowerCase());if(hit)return norm(r[hit]);}return ''}
- return rows.map((r,i)=>({
-   no: find(r,['번호','no']) || i+1,
-   name: find(r,['사업장명','상호명','업체명','점포명']),
-   address: find(r,['도로명전체주소','도로명주소','주소']),
-   phone: find(r,['연락처☎','연락처','전화번호','전화']),
-   menu: find(r,['메뉴','주요메뉴','대표메뉴'])
- })).filter(x=>x.name && !/폐업/.test(x.name));
+/* ═══════════════════════════════════════════════════════════════════════
+   가맹점 데이터는 이 파일이 아니라 stores.csv 에 있습니다.
+   명단이 바뀌면 stores.csv 만 새로 올리면 됩니다. (이 파일은 손대지 않아도 됩니다)
+
+   stores.csv 열 구성 — 순서는 달라도 되고, 머리글 이름만 맞으면 됩니다.
+     지역   상점가   점포명   업종   주메뉴   주소   연락처
+   · 점포명·상점가는 반드시 있어야 하고, 나머지는 비어 있어도 됩니다.
+   · 연락처가 비어 있으면 그 점포의 '전화하기' 버튼이 자동으로 사라집니다.
+   · 엑셀에서 저장할 때 [다른 이름으로 저장 → CSV UTF-8(쉼표로 분리)] 를 고르세요.
+     (실수로 일반 CSV 로 저장해도 글자가 깨지지 않도록 자동 보정이 들어가 있습니다)
+   ═══════════════════════════════════════════════════════════════════════ */
+
+const CSV_URL = "stores.csv";
+
+/* 사용기간 — 쿠폰 인쇄물과 반드시 일치시킬 것 */
+const PERIOD = "사용기간 2026. 9. 11.(금) ~ 10. 31.(토)";
+
+/* 서귀포시 지정 골목형상점가 (안내 섹션에 표시) */
+const DESIGNATED_MARKETS = [
+  "동남상가거리","동홍8번가","서귀중앙동 문화골목상점가","송산동 골목상점가","시계탑상가거리",
+  "올레별빛거리상점가","이중섭거리 명동로상가","천지동아랑조을거리","표선사거리상점가","플레이사계"
+];
+
+/* 업종 묶음 — 왼쪽이 화면에 나오는 이름, 오른쪽이 stores.csv 의 업종 값
+   csv 에 새 업종이 생기면 여기에 넣어 주세요. 빠진 값은 '기타'로 갑니다. */
+const CATEGORY_GROUPS = {
+  "음식점":       ["음식점"],
+  "카페·베이커리": ["카페","제과점"],
+  "소품·기념품":   ["소품"],
+  "의류·잡화":    ["의류"],
+  "미용·건강":    ["미용실","마사지","헬스장"],
+  "식품·마트":    ["편의점","정육점","소매"],
+  "생활·서비스":  ["꽃집","사진","오락","숙박업","컨설팅","통신기기판매"]
+};
+
+const GROUP_ICON = {
+  "음식점":"🍚","카페·베이커리":"☕","소품·기념품":"🎁","의류·잡화":"👕",
+  "미용·건강":"💇","식품·마트":"🛒","생활·서비스":"🧰","기타":"🏪"
+};
+
+/* ══════════════════  이하 동작 코드 — 수정 불필요  ══════════════════ */
+
+const $ = q => document.querySelector(q);
+const norm = t => (t||"").toLowerCase().replace(/[\s·.,\-()]/g,"");
+const esc = t => String(t??"").replace(/[&<>"]/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+
+const CAT_OF = {};
+Object.entries(CATEGORY_GROUPS).forEach(([g,list]) => list.forEach(v => CAT_OF[v] = g));
+const groupOf = v => CAT_OF[(v||"").trim()] || "기타";
+
+let STORES = [];
+const state = { q:"", area:"전체", market:"전체", category:"전체" };
+
+$("#periodText").textContent = PERIOD;
+$("#marketNameList").innerHTML = DESIGNATED_MARKETS.map(m => `<li>${esc(m)}</li>`).join("");
+
+/* ── CSV 읽기 ────────────────────────────────────────────── */
+function parseCSV(text){
+  const rows=[]; let row=[], cell="", quoted=false;
+  for(let i=0;i<text.length;i++){
+    const c=text[i];
+    if(quoted){
+      if(c === '"'){ if(text[i+1] === '"'){ cell+='"'; i++; } else quoted=false; }
+      else cell+=c;
+    } else if(c === '"'){ quoted=true; }
+    else if(c === ','){ row.push(cell); cell=""; }
+    else if(c === '\n'){ row.push(cell); rows.push(row); row=[]; cell=""; }
+    else if(c !== '\r'){ cell+=c; }
+  }
+  if(cell.length || row.length){ row.push(cell); rows.push(row); }
+  return rows.filter(r => r.some(v => v.trim() !== ""));
 }
-function setQ(v){document.getElementById('q').value=v;render()}
-function render(){
- const q=norm(document.getElementById('q').value).toLowerCase();
- const sort=document.getElementById('sort').value;
- let list=stores.filter(s=>(s.name+' '+s.address+' '+s.phone+' '+s.menu).toLowerCase().includes(q));
- list.sort((a,b)=>String(a[sort]).localeCompare(String(b[sort]),'ko'));
- document.getElementById('count').textContent=list.length;
- const el=document.getElementById('results');
- if(!list.length){el.innerHTML='<div class="empty"><strong>검색 결과가 없습니다.</strong>상호명, 주소 또는 메뉴의 다른 단어로 검색해보세요.</div>';return;}
- el.innerHTML=list.map(s=>{
-   const tel=s.phone ? (s.phone.startsWith('0')?s.phone:'064-'+s.phone) : '';
-   const menu=s.menu ? `<div class="menu">🍴 ${escapeHtml(s.menu)}</div>` : '';
-   const call=tel ? `<a class="call" href="tel:${tel}">전화하기</a>` : `<a class="call" href="javascript:void(0)" aria-disabled="true">전화번호 없음</a>`;
-   return `<article class="card"><div class="top"><div><div class="name">${escapeHtml(s.name)} <span class="no">#${escapeHtml(s.no)}</span></div><div class="area">📍 ${escapeHtml(s.address||'주소 정보 없음')}</div></div><div class="ok">✓ 사용 가능</div></div><div class="meta">${escapeHtml(s.address||'주소 정보 없음')}${tel?'<br>☎ '+escapeHtml(tel):''}</div>${menu}<div class="actions"><a class="map" target="_blank" href="https://map.naver.com/p/search/${encodeURIComponent(s.name+' '+s.address)}">지도에서 보기</a>${call}</div></article>`;
- }).join('');
+
+async function loadStores(){
+  const res = await fetch(CSV_URL, { cache:"no-store" });
+  if(!res.ok) throw new Error("CSV_HTTP_" + res.status);
+  const buf = await res.arrayBuffer();
+  let text = new TextDecoder("utf-8").decode(buf);
+  if(text.includes("\uFFFD")){                    // 한글 윈도우 엑셀(CP949) 저장분 자동 보정
+    try { text = new TextDecoder("euc-kr").decode(buf); } catch(e){}
+  }
+  text = text.replace(/^\uFEFF/, "");
+
+  const rows = parseCSV(text);
+  if(!rows.length) throw new Error("CSV_EMPTY");
+  const head = rows[0].map(h => h.trim());
+  const col = name => head.indexOf(name);
+  const iName = col("점포명"), iMarket = col("상점가");
+  if(iName < 0 || iMarket < 0) throw new Error("CSV_HEADER");
+  const iArea = col("지역"), iCat = col("업종"), iMenu = col("주메뉴"),
+        iAddr = col("주소"), iTel = col("연락처");
+  const get = (r,i) => (i >= 0 && r[i] ? r[i].trim() : "");
+
+  return rows.slice(1).map(r => ({
+    name:   get(r,iName),
+    market: get(r,iMarket),
+    area:   get(r,iArea) || "기타",
+    cat:    get(r,iCat),
+    group:  groupOf(get(r,iCat)),
+    menu:   get(r,iMenu).split(/[,/·]/).map(v => v.trim()).filter(Boolean),
+    addr:   get(r,iAddr),
+    tel:    get(r,iTel)
+  })).filter(x => x.name && x.market);
 }
-function escapeHtml(s){return String(s??'').replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#039;'}[m]))}
-document.getElementById('q').addEventListener('keydown',e=>{if(e.key==='Enter')render()});
-document.getElementById('xlsx').addEventListener('change',async e=>{
- const file=e.target.files[0]; if(!file)return;
- const msg=document.getElementById('importMsg'); msg.textContent='엑셀을 읽는 중입니다…';
- try{
-  const buf=await file.arrayBuffer(); const wb=XLSX.read(buf,{type:'array'}); const ws=wb.Sheets[wb.SheetNames[0]];
-  const rows=XLSX.utils.sheet_to_json(ws,{defval:''}); const next=parseRows(rows);
-  if(!next.length) throw new Error('사업장명/상호명 열을 찾지 못했거나 유효한 가맹점이 없습니다.');
-  stores=next; msg.textContent=`${file.name}에서 ${next.length}개 가맹점을 불러왔습니다.`;
-  render();
- }catch(err){msg.textContent='불러오기 실패: '+err.message;}
+
+/* ── 필터 칩 ─────────────────────────────────────────────── */
+function chipHTML(values, key){
+  return values.map(v =>
+    `<button class="chip" type="button" data-v="${esc(v)}" aria-pressed="${state[key]===v}">${esc(v)}</button>`
+  ).join("");
+}
+function bindChips(el, key){
+  el.addEventListener("click", e => {
+    const b = e.target.closest(".chip"); if(!b) return;
+    state[key] = b.dataset.v;
+    if(key === "area"){ state.market = "전체"; renderMarketChips(); }
+    syncChips(); render();
+  });
+}
+function renderAreaChips(){
+  const areas = [...new Set(STORES.map(s => s.area))];
+  $("#areaChips").innerHTML = chipHTML(["전체", ...areas], "area");
+}
+function renderMarketChips(){
+  const pool = state.area === "전체" ? STORES : STORES.filter(s => s.area === state.area);
+  const markets = [...new Set(pool.map(s => s.market))];
+  $("#marketChips").innerHTML = chipHTML(["전체", ...markets], "market");
+}
+function renderCategoryChips(){
+  const order = [...Object.keys(CATEGORY_GROUPS), "기타"];
+  const present = new Set(STORES.map(s => s.group));
+  $("#categoryChips").innerHTML = chipHTML(["전체", ...order.filter(g => present.has(g))], "category");
+}
+function syncChips(){
+  document.querySelectorAll(".chips").forEach(g => {
+    const key = g.id.replace("Chips","");
+    g.querySelectorAll(".chip").forEach(c =>
+      c.setAttribute("aria-pressed", String(state[key] === c.dataset.v)));
+  });
+  $("#resetBtn").hidden = !(state.q || state.area!=="전체" || state.market!=="전체" || state.category!=="전체");
+}
+
+/* ── 검색 ────────────────────────────────────────────────── */
+$("#q").addEventListener("input", e => {
+  state.q = e.target.value;
+  $("#clearBtn").classList.toggle("on", !!state.q);
+  syncChips(); render();
 });
-render();
+$("#clearBtn").addEventListener("click", () => {
+  state.q = ""; $("#q").value = ""; $("#clearBtn").classList.remove("on");
+  syncChips(); render(); $("#q").focus();
+});
+$("#resetBtn").addEventListener("click", () => {
+  Object.assign(state, { q:"", area:"전체", market:"전체", category:"전체" });
+  $("#q").value = ""; $("#clearBtn").classList.remove("on");
+  renderMarketChips(); syncChips(); render();
+  window.scrollTo({ top:0, behavior:"smooth" });
+});
+
+/* ── 목록 ────────────────────────────────────────────────── */
+function filtered(){
+  const q = norm(state.q);
+  return STORES.filter(s => {
+    if(state.area !== "전체" && s.area !== state.area) return false;
+    if(state.market !== "전체" && s.market !== state.market) return false;
+    if(state.category !== "전체" && s.group !== state.category) return false;
+    if(!q) return true;
+    return norm([s.name, s.market, s.area, s.cat, s.group, s.addr, s.menu.join(" ")].join(" ")).includes(q);
+  });
+}
+
+function render(){
+  const rows = filtered();
+  $("#count").innerHTML = `가맹점 <b>${rows.length}</b>곳`;
+
+  if(!rows.length){
+    $("#list").innerHTML = `
+      <div class="empty" style="grid-column:1/-1">
+        <h2 class="display">찾는 가게가 없습니다</h2>
+        <p>검색어를 줄이거나 조건을 초기화해 보세요.<br>가맹점 여부는 1899-7628로도 확인할 수 있습니다.</p>
+      </div>`;
+    return;
+  }
+
+  $("#list").innerHTML = rows.map(s => {
+    const map = "https://map.naver.com/p/search/" + encodeURIComponent(s.name + " " + s.addr);
+    return `
+      <article class="card">
+        <div class="card-top">
+          <div class="card-emoji" aria-hidden="true">${GROUP_ICON[s.group] || "🏪"}</div>
+          <div>
+            <h3 class="card-name display">${esc(s.name)}</h3>
+            <p class="card-meta">${esc(s.market)} · ${esc(s.area)}${s.cat ? " · " + esc(s.cat) : ""}</p>
+          </div>
+        </div>
+        ${s.menu.length ? `<ul class="card-menu">${s.menu.map(m=>`<li>${esc(m)}</li>`).join("")}</ul>` : ""}
+        ${s.addr ? `<p class="card-addr">${esc(s.addr)}</p>` : ""}
+        <div class="card-actions">
+          <a class="primary" href="${map}" target="_blank" rel="noopener">지도에서 보기</a>
+          ${s.tel ? `<a href="tel:${s.tel.replace(/[^0-9]/g,"")}">전화하기</a>` : ""}
+        </div>
+      </article>`;
+  }).join("");
+}
+
+/* ── 스티키 그림자 ───────────────────────────────────────── */
+const sb = $("#searchbar");
+new IntersectionObserver(([e]) => sb.classList.toggle("stuck", e.intersectionRatio < 1),
+                         { threshold:[1] }).observe(sb);
+
+/* ── 시작 ────────────────────────────────────────────────── */
+$("#list").innerHTML = `<div class="empty" style="grid-column:1/-1"><p>가맹점 명단을 불러오는 중입니다.</p></div>`;
+
+loadStores().then(list => {
+  STORES = list;
+  renderAreaChips(); renderMarketChips(); renderCategoryChips();
+  bindChips($("#areaChips"),"area");
+  bindChips($("#marketChips"),"market");
+  bindChips($("#categoryChips"),"category");
+  syncChips(); render();
+}).catch(err => {
+  console.error(err);
+  const local = location.protocol === "file:";
+  $("#count").textContent = "";
+  $("#list").innerHTML = `
+    <div class="empty" style="grid-column:1/-1">
+      <h2 class="display">명단을 불러오지 못했습니다</h2>
+      <p>${local
+        ? "파일을 더블클릭해서 연 상태에서는 브라우저가 stores.csv 를 읽지 못합니다.<br>웹서버에 올린 주소로 접속해 확인해 주세요."
+        : "index.html 과 같은 폴더에 stores.csv 가 있는지, 머리글에 ‘점포명’과 ‘상점가’가 있는지 확인해 주세요."}</p>
+    </div>`;
+});
 </script>
-</body></html>
+</body>
+</html>
